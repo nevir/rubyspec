@@ -49,4 +49,16 @@ describe "Array#fetch" do
   it "raises a TypeError when the passed argument can't be coerced to Integer" do
     lambda { [].fetch("cat") }.should raise_error(TypeError)
   end
+
+  ruby_bug "#7626", "1.8" do
+    it "behaves bizarrely when passing a block and requesting an in-bounds index" do
+      a = [11, 22, 33, 44]
+
+      a.fetch(0) { |i| i }.should == 11
+      a.fetch(1) { |i| i }.should == 22
+      a.fetch(2) { |i| i }.should == 33
+      a.fetch(3) { |i| i }.should == 44
+      a.fetch(4) { |i| i }.should == 4
+    end
+  end
 end
